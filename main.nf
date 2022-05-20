@@ -104,7 +104,7 @@ process racon_version {
 
 process medaka_version {
 
-    container "quay.io/biocontainers/medaka:1.6.0-0"
+    container "quay.io/biocontainers/medaka:1.6.0--py38h84d2cc8_0"
 
     tag {sampleID}
 
