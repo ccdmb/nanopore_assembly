@@ -54,7 +54,7 @@ if ( params.nanoporeReads ) {
 process canu_version {
 
     label "canu"
-    container "quay.io/biocontainers/canu:2.2-0"
+    container "quay.io/biocontainers/canu:2.2--ha47f30e_0"
 
     tag {sampleID} 
 
@@ -71,7 +71,7 @@ process canu_version {
 process minimap2_version {
 
     label "minimap2"
-    container "quay.io/biocontainers/minimap2:2.24-1"
+    container "quay.io/biocontainers/minimap2:2.24--h7132678_1"
 
     tag {sampleID}
 
@@ -88,7 +88,7 @@ process minimap2_version {
 process racon_version {
 
     label "racon"
-    container "quay.io/biocontainers/medaka:1.6.0-0"
+    container "quay.io/biocontainers/racon:1.5.0--h7ff8a90_0"
 
     tag {sampleID}
 
@@ -120,7 +120,7 @@ process medaka_version {
 
 process seqkit_version {
 
-    container "quay.io/biocontainers/seqkit:2.2.0-0"
+    container "quay.io/biocontainers/seqkit:2.2.0--h9ee0642_0"
 
     tag {sampleID}
 
@@ -158,7 +158,7 @@ process version {
 // genome assembly
 process canu {
 
-    container "quay.io/biocontainers/canu:2.2-0"
+    container "quay.io/biocontainers/canu:2.2--ha47f30e_0"
 
     tag {sampleID}
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
@@ -196,7 +196,7 @@ process minimap2 {
 
     tag {sampleID}
     label "minimap2"
-    container "quay.io/biocontainers/minimap2:2.24-1"
+    container "quay.io/biocontainers/minimap2:2.24--h7132678_1"
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from minimap2
@@ -214,7 +214,7 @@ process minimap2 {
 // polishing step 1
 process racon {
 
-    container "quay.io/biocontainers/racon:1.5.0-0"
+    container "quay.io/biocontainers/racon:1.5.0--h7ff8a90_0"
 
     tag {sampleID}
     publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
@@ -237,7 +237,7 @@ process racon {
 // polishing step 2
 process medaka {
 
-    container "quay.io/biocontainers/medaka:1.6.0-0"
+    container "quay.io/biocontainers/medaka:1.6.0--py38h84d2cc8_0"
 
     tag {sampleID} 
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
