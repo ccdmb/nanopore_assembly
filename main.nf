@@ -240,13 +240,12 @@ process medaka {
     container "quay.io/biocontainers/medaka:1.6.0--py38h84d2cc8_0"
 
     tag {sampleID} 
-    publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
-
+    
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into pilon
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into seqkit
 
     """
     medaka_consensus \
@@ -255,7 +254,25 @@ process medaka {
     -o ${sampleID}_medaka_output \
     -m r941_min_sup_g507
 
-    seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.contigs.racon.medaka.fasta
+    cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
+    """
+}
+
+process seqkit {
+
+    container "quay.io/biocontainers/seqkit:2.2.0--h9ee0642_0"
+
+    tag {sampleID} 
+    publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
+
+    input:
+    set sampleID, "input.fasta", 'input.fastq.gz' from seqkit
+
+    output:
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into seqkit
+
+    """   
+    seqkit sort -lr input.fasta > ${sampleID}.fasta
     seqkit replace -p '.+' -r '${sampleID}_ctg_{nr}' --nr-width 2 ${sampleID}.fasta > ${sampleID}.contigs.racon.medaka.fasta
     """
 }
