@@ -59,7 +59,7 @@ process canu_version {
     tag {sampleID} 
 
     output:
-    file 'versions.txt' into version_canu
+    file 'versions.txt' into canu_version
 
     """
     echo canu: >> versions.txt
@@ -76,7 +76,7 @@ process minimap2_version {
     tag {sampleID}
 
     output:
-    file 'versions.txt' into version_minimap2
+    file 'versions.txt' into minimap2_version
 
     """
     echo minimap2: >> versions.txt
@@ -93,7 +93,7 @@ process racon_version {
     tag {sampleID}
 
     output:
-    path 'versions.txt' into version_racon
+    path 'versions.txt' into racon_version
 
     """
     echo racon: >> versions.txt
@@ -173,7 +173,7 @@ process canu {
     output:
     set sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into minimap2
     set sampleID, "${sampleID}.correctedReads.nanopore.fasta.gz" into correctedReads
-    file "${sampleID}.canu.nanopore.report"
+    path "${sampleID}.canu.nanopore.report"
 
     """
     canu \
