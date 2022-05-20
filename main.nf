@@ -269,7 +269,7 @@ process seqkit {
     set sampleID, "input.fasta", 'input.fastq.gz' from seqkit
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into seqkit
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz'
 
     """   
     seqkit sort -lr input.fasta > ${sampleID}.fasta
