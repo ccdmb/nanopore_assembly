@@ -133,11 +133,11 @@ process seqkit_version {
 process version {
 
     input:
-    path "canu" from canu_version
-    path "racon" from racon_version
-    path "minimap" from minimap2_version
-    path "medaka" from medaka_version
-    path "seqkit" from seqkit_version
+    path "canu.txt" from canu_version
+    path "racon.txt" from racon_version
+    path "minimap.txt" from minimap2_version
+    path "medaka.txt" from medaka_version
+    path "seqkit.txt" from seqkit_version
 
     publishDir "${params.outdir}/", mode: 'copy', pattern: 'versions.txt'
 
@@ -146,7 +146,7 @@ process version {
 
     script:
     """
-    cat canu racon medaka minimap seqkit > versions.txt
+    cat canu.txt racon.txt medaka.txt minimap.txt seqkit.txt > versions.txt
     """
 }
 
@@ -159,8 +159,6 @@ process canu {
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta.gz'
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.report'
-
-    memory '30 GB'
 
     input:
     set sampleID, 'input.fastq.gz' from readsForAssembly
