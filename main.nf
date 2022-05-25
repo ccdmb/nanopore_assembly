@@ -24,6 +24,10 @@ def helpMessage() {
         A glob of the fastq.gz files of the adapter and barcode trimmed reads.
         The basename of the file needs to match the basename of the respective genome.
 
+    --canuSlow
+        Default: false
+        Disables canu fast mode.
+
     --outdir <path>
         Default: `assembly`
         The directory to store the results in.
@@ -156,12 +160,16 @@ process canu {
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.report'
 
     input:
-    set sampleID, 'input.fastq.gz' from readsForAssembly
+    tuple sampleID, 'input.fastq.gz' from readsForAssembly
 
     output:
-    set sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into minimap2
-    set sampleID, "${sampleID}.correctedReads.nanopore.fasta.gz" into correctedReads
+    tuple sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into minimap2
+    tuple sampleID, "${sampleID}.correctedReads.nanopore.fasta.gz" into correctedReads
     path "${sampleID}.canu.nanopore.report"
+
+    script:
+    // See: https://groovy-lang.org/operators.html#_elvis_operator
+    fast_option = params.canuSlow ? "" : "-fast "
 
     """
     canu \
@@ -170,7 +178,7 @@ process canu {
     genomeSize=45m \
     minInputCoverage=5 \
     stopOnLowCoverage=5 \
-    -fast \
+    ${fast_option} \
     -nanopore input.fastq.gz
 
     cp ${sampleID}/*contigs.fasta ${sampleID}.contigs.fasta
@@ -186,10 +194,10 @@ process minimap2 {
     label "minimap2"
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from minimap2
+    tuple sampleID, 'input.fasta', 'input.fastq.gz' from minimap2
 
     output:
-    set sampleID, 'input.fasta', 'input.fastq.gz', 'minimap.racon.paf' into racon
+    tuple sampleID, 'input.fasta', 'input.fastq.gz', 'minimap.racon.paf' into racon
 
     """
     minimap2 \
@@ -207,10 +215,10 @@ process racon {
     publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz', 'minimap.racon.paf' from racon
+    tuple sampleID, 'input.fasta', 'input.fastq.gz', 'minimap.racon.paf' from racon
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
+    tuple sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
 
     """
     racon -m 8 -x -6 -g -8 -w 500 -t 14\
@@ -229,10 +237,10 @@ process medaka {
     tag {sampleID}
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
+    tuple sampleID, 'input.fasta', 'input.fastq.gz' from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into seqkit
+    tuple sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into seqkit
 
     """
     medaka_consensus \
@@ -254,10 +262,10 @@ process seqkit {
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, "input.fasta", 'input.fastq.gz' from seqkit
+    tuple sampleID, "input.fasta", 'input.fastq.gz' from seqkit
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz'
+    tuple sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz'
 
     """
     seqkit sort -lr input.fasta > ${sampleID}.fasta
