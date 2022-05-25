@@ -53,10 +53,9 @@ if ( params.nanoporeReads ) {
 process canu_version {
 
     label "canu"
-    tag {sampleID}
 
     output:
-    file 'versions.txt' into canu_version
+    path 'versions.txt' into canu_version
 
     """
     echo canu: >> versions.txt
@@ -69,10 +68,9 @@ process canu_version {
 process minimap2_version {
 
     label "minimap2"
-    tag {sampleID}
 
     output:
-    file 'versions.txt' into minimap2_version
+    path 'versions.txt' into minimap2_version
 
     """
     echo minimap2: >> versions.txt
@@ -85,7 +83,6 @@ process minimap2_version {
 process racon_version {
 
     label "racon"
-    tag {sampleID}
 
     output:
     path 'versions.txt' into racon_version
@@ -101,7 +98,6 @@ process racon_version {
 process medaka_version {
 
     label "medaka"
-    tag {sampleID}
 
     output:
     path 'versions.txt' into medaka_version
@@ -117,10 +113,9 @@ process medaka_version {
 process seqkit_version {
 
     label "seqkit"
-    tag {sampleID}
 
     output:
-    file 'versions.txt' into seqkit_version
+    path 'versions.txt' into seqkit_version
 
     """
     echo seqkit: >> versions.txt
