@@ -22,10 +22,10 @@ We have a few profiles available to customise how the pipeline will run.
 
 ```bash
 # Using docker
-nextflow run ccdmb/nanopore_pipeline -profile docker -resume -latest --nanoporeReads "*.fastq.gz"
+nextflow run ccdmb/nanopore_assembly -profile docker -resume -latest --nanoporeReads "*.fastq.gz"
 
 # Using docker, and also increasing CPUs for canu.
-nextflow run ccdmb/nanopore_pipeline -profile docker,nimbus -resume -latest --nanoporeReads "*.fastq.gz"
+nextflow run ccdmb/nanopore_assembly -profile docker,nimbus -resume -latest --nanoporeReads "*.fastq.gz"
 ```
 
 
