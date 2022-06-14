@@ -6,7 +6,7 @@ More documentation to come.
 ## Examples
 
 ```bash
-nextflow run ccdmb/nanopore_pipeline -resume -latest --nanoporeReads "*.fastq.gz"
+nextflow run ccdmb/nanopore_assembly -resume -latest --nanoporeReads "*.fastq.gz"
 ```
 
 
